@@ -26,6 +26,9 @@ example = (() => {
     camera.position.z = 100
     scene.add(camera)
 
+
+
+    // Create Box Geometry
     box = new THREE.Mesh(
       new THREE.BoxGeometry(20, 20, 20),
       new THREE.MeshBasicMaterial({
@@ -35,7 +38,7 @@ example = (() => {
     box.name = "box"
     // scene.add(box)
 
-
+    // Create Sphere Geometry
     // Sphere mesh: radius, widthSegmentds, heightSegment
     sphere = new THREE.Mesh(
       new THREE.SphereGeometry(20, 30, 30),
@@ -45,7 +48,43 @@ example = (() => {
       })
     )
     box.name = "box"
-    scene.add(sphere)
+    // scene.add(sphere)
+
+
+    // Create custom Geometry
+
+    let triangleGeometry = new THREE.Geometry()
+
+    triangleGeometry.vertices.push(new THREE.Vector3(0.0,10.0,0.0))
+    triangleGeometry.vertices.push(new THREE.Vector3(-10.0,-10.0,0.0))
+    triangleGeometry.vertices.push(new THREE.Vector3(10.0,-10.0,0.0))
+
+    triangleGeometry.faces.push(new THREE.Face3(0,1,2))
+
+    triangleGeometry.faces[0].vertexColors[0] = new THREE.Color(0xFF0000)
+    triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00)
+    triangleGeometry.faces[0].vertexColors[2] = new THREE.Color(0x0000FF)
+
+
+
+
+    let triangleMaterial = new THREE.MeshBasicMaterial({
+      vertexColors: THREE.VertexColors,
+      side: THREE.DoubleSide,
+      wireframe: false
+    })
+
+
+
+
+
+
+    let manualGeometry = new THREE.Mesh(triangleGeometry, triangleMaterial)
+    scene.add(manualGeometry)
+
+
+
+
 
 
     stats = new Stats()
