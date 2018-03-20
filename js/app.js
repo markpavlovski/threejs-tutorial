@@ -9,6 +9,7 @@ example = (() => {
   let box
   let sphere
   let manualGeometry
+  let shape
   let t = 0
 
   function initScene() {
@@ -67,22 +68,42 @@ example = (() => {
     triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00)
     triangleGeometry.faces[0].vertexColors[2] = new THREE.Color(0x0000FF)
 
-
-
-
     let triangleMaterial = new THREE.MeshBasicMaterial({
       vertexColors: THREE.VertexColors,
       side: THREE.DoubleSide,
       wireframe: false
     })
 
-
-
-
-
-
     manualGeometry = new THREE.Mesh(triangleGeometry, triangleMaterial)
-    scene.add(manualGeometry)
+    // scene.add(manualGeometry)
+
+
+    // Play with Extrusion
+
+    let wireMaterial = new THREE.MeshBasicMaterial({
+      color: 0xBADA55,
+      wireframe: true
+    })
+
+    let shapePoints = []
+    shapePoints.push(new THREE.Vector3(0.0, 10.0, 0.0))
+    shapePoints.push(new THREE.Vector3(-10.0, -10.0, 0.0))
+    shapePoints.push(new THREE.Vector3(10.0, -10.0, 0.0))
+
+    let shapeSettings = new THREE.Shape( shapePoints )
+    let extrusionSettings = {
+      steps: 10,
+      amount: 20,
+      bevelEnabled: false
+    }
+
+    let shapeGeometry = new THREE.ExtrudeGeometry( shapeSettings, extrusionSettings )
+
+    shape = new THREE.Mesh(shapeGeometry, wireMaterial)
+    scene.add(shape)
+
+
+
 
 
 
@@ -105,8 +126,11 @@ example = (() => {
     manualGeometry.geometry.vertices[0].y = 10 * (1 + Math.pow(Math.sin(t),2))
     manualGeometry.geometry.vertices[1].x = 10 * (1 + Math.pow(Math.sin(t),2))
     manualGeometry.geometry.vertices[2].x = -10 * (1 + Math.pow(Math.sin(t),2))
-
     manualGeometry.geometry.verticesNeedUpdate = true
+
+
+    shape.rotation.y += 0.01
+
 
 
     renderer.render(scene, camera)
