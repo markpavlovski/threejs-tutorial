@@ -37,7 +37,7 @@ example = (() => {
 
     // added loader from examples
     loader = new THREE.ColladaLoader()
-    loader.options.convertUpAxis = true
+    // loader.options.convertUpAxis = true
 
     loader.load('models/stormtrooper.dae', (collada)=>{
       monster = collada.scene
@@ -55,14 +55,19 @@ example = (() => {
 
     loader = new THREE.JSONLoader()
 
-    loader.load("threejs/examples/models/animated/monster/monster.js", (geometry,materials)=>{
-      let material = materials[0]
-      flamingo = new THREE.Mesh(geometry, material)
-      flamingo.scale.x = 0.01
-      flamingo.scale.y = 0.01
-      flamingo.scale.z = 0.01
-      flamingo.position.y = 0
-      flamingo.position.x = -10
+    loader.load("models/flamingo.js", (geometry,materials)=>{
+      let material = new THREE.MeshBasicMaterial({
+        color: 0xBADA55,
+        wireframe: true
+      })
+      flamingo = new THREE.Mesh(geometry,material)
+      flamingo.scale.x = .2
+      flamingo.scale.y = .2
+      flamingo.scale.z = .2
+
+      flamingo.position.x = -5
+      flamingo.position.y = 7
+
 
       scene.add(flamingo)
       render()
@@ -172,8 +177,8 @@ example = (() => {
 
 
     shape.rotation.y += 0.01
-    monster.rotation.z += 0.005
-    flamingo.rotation.y += 0.001
+    if (monster) monster.rotation.z += 0.005
+    if (flamingo) flamingo.rotation.y += 0.005
 
     renderer.render(scene, camera)
     requestAnimationFrame(render)
