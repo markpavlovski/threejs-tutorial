@@ -15,17 +15,13 @@ perlin = (() => {
     scene.add(light)
 
 
-    // first 35 - Field of View, the up /down degree.
-    // second aspect ratio : width/height of the container
-    // The last two are the near and far planes of inclusion - only objects inside teh range will be rendered
-    // we are using perspective camera, but orthographic camera is another option wchich creates cool equal effect
-    camera = new THREE.PerspectiveCamera(
-      35,
-      window.innerWidth / window.innerHeight,
-      1, 1000
-    )
-    camera.position.z = 800
+    let width = window.innerWidth
+    let height = window.innerHeight
+    camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    camera.position.z = 1
     camera.position.y = 100
+    camera.position.x = 100
+
     scene.add(camera)
 
 
@@ -58,15 +54,15 @@ perlin = (() => {
     }
 
     var x = 0,
+      dx = 1,
       y = h / 2,
-      amp = 100, //amplitude
-      wl = 100, //wavelength
+      amp = 10, //amplitude
+      wl = 40, //wavelength
       fq = 1 / wl, //frequency
       a = rand(),
       b = rand();
 
 
-    noiseGeometry.vertices.push(new THREE.Vector3(0.0, 0.0, 0.0))
     while (x < w) {
       if (x % wl === 0) {
         a = b;
@@ -75,14 +71,19 @@ perlin = (() => {
       } else {
         y = h / 2 + interpolate(a, b, (x % wl) / wl) * amp;
       }
-      noiseGeometry.vertices.push(new THREE.Vector3(x, y, 0.0))
+      noiseGeometry.vertices.push(new THREE.Vector3(x-w/2+dx, 0.0, 0.0))
+      noiseGeometry.vertices.push(new THREE.Vector3(x-w/2+dx, y, 0.0))
       // ctx.fillRect(x, y, 1, 1);
-      x += 10;
+      x += dx;
     }
-    console.log(noiseGeometry.vertices)
-    noiseGeometry.faces.push(new THREE.Face3(0, 2, 1))
+    console.log(Object.values(noiseGeometry.vertices))
+    for (let i=0; i< noiseGeometry.vertices.length-2; i+=2){
+      noiseGeometry.faces.push(new THREE.Face3(i, i+2, i+1))
+      noiseGeometry.faces.push(new THREE.Face3(i+1, i+2, i+3))
+    }
 
-    let noiseMesh = new THREE.Mesh(noiseGeometry)
+    let material = new THREE.MeshNormalMaterial
+    let noiseMesh = new THREE.Mesh(noiseGeometry,material)
     scene.add(noiseMesh)
 
 
