@@ -7,6 +7,9 @@ example = (() => {
   let light = new THREE.AmbientLight(0xffffff)
   let camera
   let box
+  let sphere
+  let manualGeometry
+  let t = 0
 
   function initScene() {
     renderer.setSize(window.innerWidth, window.innerHeight)
@@ -47,7 +50,6 @@ example = (() => {
         wireframe: true
       })
     )
-    box.name = "box"
     // scene.add(sphere)
 
 
@@ -55,11 +57,11 @@ example = (() => {
 
     let triangleGeometry = new THREE.Geometry()
 
-    triangleGeometry.vertices.push(new THREE.Vector3(0.0,10.0,0.0))
-    triangleGeometry.vertices.push(new THREE.Vector3(-10.0,-10.0,0.0))
-    triangleGeometry.vertices.push(new THREE.Vector3(10.0,-10.0,0.0))
+    triangleGeometry.vertices.push(new THREE.Vector3(0.0, 10.0, 0.0))
+    triangleGeometry.vertices.push(new THREE.Vector3(-10.0, -10.0, 0.0))
+    triangleGeometry.vertices.push(new THREE.Vector3(10.0, -10.0, 0.0))
 
-    triangleGeometry.faces.push(new THREE.Face3(0,1,2))
+    triangleGeometry.faces.push(new THREE.Face3(0, 1, 2))
 
     triangleGeometry.faces[0].vertexColors[0] = new THREE.Color(0xFF0000)
     triangleGeometry.faces[0].vertexColors[1] = new THREE.Color(0x00FF00)
@@ -79,7 +81,7 @@ example = (() => {
 
 
 
-    let manualGeometry = new THREE.Mesh(triangleGeometry, triangleMaterial)
+    manualGeometry = new THREE.Mesh(triangleGeometry, triangleMaterial)
     scene.add(manualGeometry)
 
 
@@ -98,6 +100,15 @@ example = (() => {
   function render() {
     box.rotation.y += 0.01
     sphere.rotation.y += 0.01
+    // manualGeometry.rotation.y += 0.01
+    t += 0.02
+    manualGeometry.geometry.vertices[0].y = 10 * (1 + Math.pow(Math.sin(t),2))
+    manualGeometry.geometry.vertices[1].x = 10 * (1 + Math.pow(Math.sin(t),2))
+    manualGeometry.geometry.vertices[2].x = -10 * (1 + Math.pow(Math.sin(t),2))
+
+    manualGeometry.geometry.verticesNeedUpdate = true
+
+
     renderer.render(scene, camera)
     requestAnimationFrame(render)
     stats.update()
