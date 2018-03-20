@@ -6,10 +6,13 @@ example = (() => {
   let renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer() : THREE.CanvasRenderer()
   let light = new THREE.AmbientLight(0xffffff)
   let camera
+  let loader
   let box
   let sphere
   let manualGeometry
   let shape
+  let monster
+  let flamingo
   let t = 0
 
   function initScene() {
@@ -27,8 +30,47 @@ example = (() => {
       window.innerWidth / window.innerHeight,
       1, 1000
     )
-    camera.position.z = 100
+    camera.position.z = 50
+    camera.position.y = 10
+    camera.rotation.x = -.1
     scene.add(camera)
+
+    // added loader from examples
+    loader = new THREE.ColladaLoader()
+    loader.options.convertUpAxis = true
+
+    loader.load('models/stormtrooper.dae', (collada)=>{
+      monster = collada.scene
+      monster.scale.x = 2
+      monster.scale.y = 2
+      monster.scale.z = 2
+
+
+      // scene.add(monster)
+      render()
+    })
+
+
+    // added Three.js native loader
+
+    loader = new THREE.JSONLoader()
+
+    loader.load("threejs/examples/models/animated/monster/monster.js", (geometry,materials)=>{
+      let material = materials[0]
+      flamingo = new THREE.Mesh(geometry, material)
+      flamingo.scale.x = 0.01
+      flamingo.scale.y = 0.01
+      flamingo.scale.z = 0.01
+      flamingo.position.y = 0
+      flamingo.position.x = -10
+
+      scene.add(flamingo)
+      render()
+    })
+
+
+
+
 
 
 
@@ -100,7 +142,7 @@ example = (() => {
     let shapeGeometry = new THREE.ExtrudeGeometry( shapeSettings, extrusionSettings )
 
     shape = new THREE.Mesh(shapeGeometry, wireMaterial)
-    scene.add(shape)
+    // scene.add(shape)
 
 
 
@@ -130,8 +172,8 @@ example = (() => {
 
 
     shape.rotation.y += 0.01
-
-
+    monster.rotation.z += 0.005
+    flamingo.rotation.y += 0.001
 
     renderer.render(scene, camera)
     requestAnimationFrame(render)
