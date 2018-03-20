@@ -32,21 +32,43 @@ example = (() => {
         color: 0xFF0000
       })
     )
-
     box.name = "box"
-    scene.add(box)
+    // scene.add(box)
+
+
+    // Sphere mesh: radius, widthSegmentds, heightSegment
+    sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(20, 150, 150),
+      new THREE.MeshBasicMaterial({
+        color: 0xFF0000,
+        wireframe: true
+      })
+    )
+    box.name = "box"
+    scene.add(sphere)
+
+
+    stats = new Stats()
+    stats.setMode(0)
+    stats.domElement.style.position = 'absolute'
+    stats.domElement.style.left = '0px'
+    stats.domElement.style.top = '0px'
+    document.body.appendChild(stats.domElement)
 
     render()
   }
 
-  function render(){
+  function render() {
     box.rotation.y += 0.01
-    box.rotation.x += 0.01
+    sphere.rotation.y += 0.01
     renderer.render(scene, camera)
     requestAnimationFrame(render)
+    stats.update()
   }
 
   // initScene()
   window.onload = initScene
-  return {scene: scene}
+  return {
+    scene: scene
+  }
 })()
