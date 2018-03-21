@@ -10,7 +10,10 @@ perlin = (() => {
   let t = 0
 
   function initScene() {
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer = new THREE.CanvasRenderer();
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.sortElements = false;
     document.querySelector("#webgl-container").appendChild(renderer.domElement)
     scene.add(light)
 
@@ -82,7 +85,13 @@ perlin = (() => {
       noiseGeometry.faces.push(new THREE.Face3(i+1, i+2, i+3))
     }
 
-    let material = new THREE.MeshNormalMaterial
+
+    let material = new THREE.MeshBasicMaterial({
+      vertexColors: THREE.VertexColors,
+      side: THREE.DoubleSide,
+      wireframe: false,
+      overdraw: true
+    })
     let noiseMesh = new THREE.Mesh(noiseGeometry,material)
     scene.add(noiseMesh)
 
