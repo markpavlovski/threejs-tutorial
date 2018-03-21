@@ -7,23 +7,26 @@ perlin = (() => {
   let light = new THREE.AmbientLight(0xffffff)
   let camera
   let manualGeometry
+  let noiseMesh
   let t = 0
+  let width
+  let height
 
   function initScene() {
     renderer = new THREE.CanvasRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.sortElements = false;
     document.querySelector("#webgl-container").appendChild(renderer.domElement)
     scene.add(light)
 
 
-    let width = window.innerWidth
-    let height = window.innerHeight
-    camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    width = window.innerWidth
+    height = window.innerHeight
+    camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
     camera.position.z = 1
-    camera.position.y = 100
-    camera.position.x = 100
+    camera.position.y = 0
+    camera.position.x = 0
 
     scene.add(camera)
 
@@ -59,8 +62,8 @@ perlin = (() => {
     var x = 0,
       dx = 1,
       y = h / 2,
-      amp = 10, //amplitude
-      wl = 40, //wavelength
+      amp = 50, //amplitude
+      wl = 200, //wavelength
       fq = 1 / wl, //frequency
       a = rand(),
       b = rand();
@@ -74,15 +77,15 @@ perlin = (() => {
       } else {
         y = h / 2 + interpolate(a, b, (x % wl) / wl) * amp;
       }
-      noiseGeometry.vertices.push(new THREE.Vector3(x-w/2+dx, 0.0, 0.0))
-      noiseGeometry.vertices.push(new THREE.Vector3(x-w/2+dx, y, 0.0))
+      noiseGeometry.vertices.push(new THREE.Vector3(x - w / 2 + dx, 0.0, 0.0))
+      noiseGeometry.vertices.push(new THREE.Vector3(x - w / 2 + dx, y, 0.0))
       // ctx.fillRect(x, y, 1, 1);
       x += dx;
     }
     console.log(Object.values(noiseGeometry.vertices))
-    for (let i=0; i< noiseGeometry.vertices.length-2; i+=2){
-      noiseGeometry.faces.push(new THREE.Face3(i, i+2, i+1))
-      noiseGeometry.faces.push(new THREE.Face3(i+1, i+2, i+3))
+    for (let i = 0; i < noiseGeometry.vertices.length - 2; i += 2) {
+      noiseGeometry.faces.push(new THREE.Face3(i, i + 2, i + 1))
+      noiseGeometry.faces.push(new THREE.Face3(i + 1, i + 2, i + 3))
     }
 
 
@@ -92,11 +95,19 @@ perlin = (() => {
       wireframe: false,
       overdraw: true
     })
-    let noiseMesh = new THREE.Mesh(noiseGeometry,material)
+    noiseMesh = new THREE.Mesh(noiseGeometry, material)
     scene.add(noiseMesh)
 
 
-
+    var geometry = new THREE.PlaneGeometry(width, height, 1);
+    var planeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x313131,
+      side: THREE.DoubleSide,
+      overdraw: true
+    });
+    var plane = new THREE.Mesh(geometry, planeMaterial);
+    plane.position.z = -2
+    scene.add(plane);
 
 
 
@@ -144,6 +155,10 @@ perlin = (() => {
     manualGeometry.geometry.vertices[1].x = 10 * (1 + Math.pow(Math.sin(t), 2))
     manualGeometry.geometry.vertices[2].x = -10 * (1 + Math.pow(Math.sin(t), 2))
     manualGeometry.geometry.verticesNeedUpdate = true
+
+    noiseMesh.position.y = -height * .8
+
+
 
     renderer.render(scene, camera)
     requestAnimationFrame(render)
