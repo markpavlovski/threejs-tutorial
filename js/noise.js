@@ -96,6 +96,7 @@ perlin = (() => {
       overdraw: true
     })
     noiseMesh = new THREE.Mesh(noiseGeometry, material)
+
     scene.add(noiseMesh)
 
 
@@ -149,12 +150,16 @@ perlin = (() => {
 
   function render() {
 
-    t += 0.00
+    t += 0
 
     manualGeometry.geometry.vertices[0].y = 10 * (1 + Math.pow(Math.sin(t), 2))
     manualGeometry.geometry.vertices[1].x = 10 * (1 + Math.pow(Math.sin(t), 2))
     manualGeometry.geometry.vertices[2].x = -10 * (1 + Math.pow(Math.sin(t), 2))
-    manualGeometry.geometry.verticesNeedUpdate = true
+
+    for (let i = 1; i < noiseMesh.geometry.vertices.length - 2; i += 2) {
+      noiseMesh.geometry.vertices[i].y += Math.random()/10 * Math.pow(Math.sin(t), 2)
+    }
+    noiseMesh.geometry.verticesNeedUpdate = true
 
     noiseMesh.position.y = -height * .8
 
